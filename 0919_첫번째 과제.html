@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue js 첫번째 과제</title>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="app">
+        <div>
+            <header>
+                <div class="navbar navb ar-default">
+                    <h1 v-text="sitename"></h1>
+                </div>
+            </header>
+        </div>    
+        <div v-if="showProduct">
+            <main>
+            <div class="row">
+                <div class="row product">
+                    <div class="col">
+                        <figure><img v-bind:src="product.img" alt=""></figure>
+                    </div>
+                    <div class="col col-expand">
+                        <h1 v-text="product.title"></h1>
+                        <p v-html="product.description"></p>
+                        <p>{{ product.price | formatPrice }}</p>
+                        <p>현재 재고량 : {{ remaindInventory }}</p>
+                        <button v-if="canAddToCart"class="btn btn-primary btn-lg" @click="addToCart">장바구니 담기</button>
+                        <button v-else disabled class="btn btn-secondary btn-lg">장바구니 담기</button>
+                        <button class="btn btn-warning btn-lg" @click="showCheckout">주문하기</button>
+                        <button class="btn btn-secondary btn-lg" @click="emptyToCart">비우기</button>
+                    </div>
+                </div>
+            </div>
+            </main>
+        </div>
+        <div v-else>   
+            <div class="nav justify-content-end cart">
+                <button type="button" class="btn btn-warning btn-lg" @click="showCheckout">
+                    <span>장바구니 {{ cartItemCount }}</span>
+                    <span>주문하기</span>
+                </button>
+            </div>
+        </div>
+    </div> 
+    <!-- end of app -->
+    
+    <script>
+        var APP_LOG_LIFECYCLE_EVENTS = true;
+
+        function w(msg) {
+            if(APP_LOG_LIFECYCLE_EVENTS) {
+                console.log(msg);
+            }
+        }
+
+        window.onload = function() {
+            let temp = JSON.parse(localStorage.getItem("cart"));
+            if (temp) {
+                webstore.cart = temp;
+            }
+        }
+
+        let webstore = new Vue({
+            
+            el : '#app',
+            data : {  
+                sitename : 'Vue.js 애완용품샵',
+                product : {
+                    id : 1001,
+                    title : "고양이 사료, 25파운드",
+                    description : "당신의 고양이를 위한 <b>거부할 수 없는</b>, " +
+                    "유기농 25파운드 사료입니다.",
+                    price : 2000,
+                    img : "assets/images/product-fullsize.png",
+                    inventory : 5, 
+                },
+            cart : [], // 카트 아이템을 담은 배열
+            showProduct : true 
+
+            },
+            
+        computed : {
+            productName() 
+            {
+                return `[${this.product.id}] ${this.product.title}`;
+            },
+            cartItemCount()
+            {
+                return this.cart.length;
+            },
+            remaindInventory()
+            {
+                let v = this.product.inventory - this.cart.length;
+                return v > 0 ? `${v}개` : `없음`;
+            },
+            canAddToCart()
+            {
+                return this.product.inventory > this.cart.length;
+            }
+
+        }, // end of computed
+        filters : { // 출력 필터를 포함
+            formatPrice(price) {
+                if(!parseInt(price)) { return ""; } // 정수를 받지 못하면 즉시 "" 반환
+                if(price > 99999) // $1,000이상의 값들을 형식화
+                { 
+                    var priceString = (price / 100).toFixed(2); // 소수로 변환
+                    var priceArray = priceString.split("").reverse(); // reverse : 데이터를 반대로 출력
+                    var index = 3;
+
+                    while(priceArray.length > index + 3) // 세자리마다 쉽표 삽입
+                    { 
+                        priceArray.splice(index + 3, 0, ', ');
+                        index += 4;
+                    }
+                    return "$" + priceArray.reverse().join("");
+                } 
+                else 
+                {
+                    return "$" + (price / 100).toFixed(2);
+                }
+            }
+        }, // end of filters
+        methods : {
+            addToCart() // 장바구니 담기 버튼
+            {
+                if(this.product.inventory > this.cart.length) // product의 inventory 수가 cart 배열의 길이보다 크다면?
+                {
+                    this.cart.push(this.product.id); // cart 배열에 product.id를 push
+                }
+                this.saveCart();
+            },
+            showCheckout() // 주문하기 버튼
+            {
+                if(this.cart.length == 0)
+                {
+                    alert("장바구니에 물품이 없습니다.");
+                } else
+                {
+                   this.showProduct = this.showProduct ? false : true;
+                }
+            },
+            emptyToCart() // 장바구니 비우기
+            {
+                this.cart = []; 
+                this.saveCart();
+            },
+            saveCart() 
+            {
+                window.localStorage.setItem("cart", JSON.stringify(this.cart));
+            },
+
+        }, // end of methods
+
+    }); // end of Vue
+    </script>
+</body>
+</html>
