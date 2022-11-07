@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter7</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <form-component 
+            :author="authorLabel" 
+            :title="titleLabel">
+            <h2 id="book-input-header1">{{header}}</h2>
+            <h3>{{header}}</h3>
+        </form-component>
+    </div>
+
+    <script>
+
+        const FormComponent = {
+            template : `
+            <div>
+                <slot></slot>
+                <form>
+                    <slot></slot>
+                    <label for="title">{{ title }}</label><input id="title" type="text" /></br>
+                    <label for="author">{{ author }}</label><input id="author" type="text" /></br>
+                    <button>제출하기</button>
+                </form>    
+            </div>
+            `,
+            props : ['title', 'author'],
+        }
+
+        new Vue({
+            el: '#app', // mounted
+            components : {
+                'form-component' : FormComponent,
+            },
+            data() {
+                return {
+                    header : '책 저자 폼',
+                    titleLabel : '책제목 : ',
+                    authorLabel : '저자명 : ',
+                }
+            },
+        });
+    </script>
+</body>
+</html>

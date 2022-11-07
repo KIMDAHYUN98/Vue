@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter6 컴포넌트 index3.html</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <h1>WD2A 2101257 김다현</h1>
+    <div id="app">
+        <div>새로운 페이지</div>
+        <my-component :num="myNumber" :obj="passedObject" :even="myNumber"></my-component>
+
+    </div>
+
+    <script>
+        const MyComponent = {
+            template : `<div>숫자 : {{ num }}</br>문자열 : {{ str }}</br>객체속성 : {{ obj.message }}</br>짝수 : {{ even }} </div>`,
+            props: {
+                num:{
+                    type : Number,  // number 객체 이름
+                    required : true,  // 필수 항목
+                },
+                str : {
+                    type : String,
+                    default : '안녕', // 무조건 디폴트 값으로 출력
+                },
+                obj : {
+                    type : Object,
+                    default : () => { 
+                        return { message : '객체 안녕' };
+                        // 값이 없을 경우에는 디폴트 값을 주는데 객체의 경우 함수 형태로 반환
+                    }
+                }, 
+                even : { // 특정한 값인지 비교
+                    validator : (value) => {
+                        return (value % 2 === 0)
+                    }
+                },
+            },
+        };
+
+       let webstroe = new Vue({
+            el : '#app',  
+            components : {'my-component' : MyComponent},
+             data() {
+                return {
+                    myNumber: 43,
+                    passedObject : { message : 'Vue 데이터 객체의 passedObject' }
+                }
+            }
+
+    }); 
+    </script>
+</body>
+</html>

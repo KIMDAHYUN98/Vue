@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter6 컴포넌트 index1.html</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <h1>WD2A 2101257 김다현</h1>
+    <div id="app">
+        <div>새로운 페이지</div>
+        
+        <my-component></my-component>
+        <my-component></my-component>
+        <my-component></my-component>
+
+        <!-- 
+            <my-component :text="message"></my-component>
+            text 앞에 콜론(v-bind의 약자)이 없을 경우 message가 출력
+            v:bind => data 객체를 사용한다는 의미
+        -->
+
+    </div>
+    <!--
+        script 태그 위치가 여기인 이유
+        html은 브라우저가 읽어들일때 위에서 아래로 순차적으로 읽고 실행
+        스크립트 태그가 실행될 때 html 태그가 이미 실행 된 후의 id나 class 값을 알고 찾아갈 수 있기 때문이다.
+    -->
+    <script>
+        // html 코드의 my-component와 뷰 객체의 MyComponent는 동일
+        const counter = { counter : 0 };
+        const MyComponent = {
+            template : `<div><button v-on:click="counter += 1"> {{ counter }} </button></div>`,
+            data() {
+                return counter;
+            }
+        };
+       // 전역으로 추가
+       // new Vue()가 내부적으로 전용 컴포넌트가 있으면 참조할 수 있는 구조?
+       // 컴포넌트는 사용자에 따라 바뀌지 않고 다양한 환경 속에 사용될 수 있도록 구성해야함
+       Vue.component('my-component', {                                         // 객체의 속성값을 추가하는 것과 유사
+            template : `<div>안녕. {{text}}!</div>`,                           // 태그 속성으로 큰 따옴표와 작은 따옴표를 사용하기에 겹치지 않음
+            props : ['text']                                                   // 배열 형태, name이라는 속성을 사용할 수 있도록 등록
+
+
+        });
+        // vue 객체는 상황에 따라 계속 생성해야함
+       let webstroe = new Vue({                                               // new Vue({ }) => 셋팅 값
+            el : '#app',                                                      // 제일 중요! el 속성
+             // componets : {} => 지역으로 추가
+            components : {'my-component' : MyComponent},
+             data() {
+                return {
+                    message : ``,
+                }
+            }
+            // typeof => 자바스크립트 내 해당된 변수의 값이 오브젝트인지 함수인지 문자열인지를 판별
+            // 데이터 객체의 설정된 값이 객체면 그대로 데이터 값으로 반환
+            // 함수 형식인 경우 데이터 객체로 적용해서 반환
+            // 함수나 객체 사용 가능
+            // 이 부분이 버전 3에서는 무조건 함수를 사용하도록 권장됨
+            // 객체로 하면 오류가 발생
+            // 단 컴포넌트도 데이터를 취할 수 있음 그 하나도 뷰 객체이기 때문에 데이터 속성 사용 가능
+            // 데이터 속성을 가질 수 있는데 컴포넌트 안에서도 메세지를 가질 수 있음
+            // 컴포넌트를 만들 때는 데이터 객체를 data:{} 이 형식으로 사용 불가능, 무조건 함수 호출 형식으로 권장
+
+    }); 
+    // 컴포넌트는 객체, 태그로 작성시 대소문자 구분이 안됨
+    </script>
+</body>
+</html>

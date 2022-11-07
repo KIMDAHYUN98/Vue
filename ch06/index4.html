@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter6 컴포넌트 index4.html</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <h1>WD2A 2101257 김다현</h1>
+    <div id="app">
+        <div>새로운 페이지</div>
+        {{ counter }}<br />
+        <button v-on:click="incrementCounter">counter 변수 값 증가</button>
+        <my-component v-on:increment-me="incrementCounter"></my-component>
+    </div>
+
+    <script>
+        const MyComponent = {
+            template : `<div>` +
+                       `<button v-on:increment-me="incrementCounter" @click="incrementCounterFromComponent">` + 
+                        `컴포넌트에서 counter 변수 값 증가</button>` + 
+                        `</div>`,
+            methods : {
+                incrementCounterFromComponent() {
+                    this.$emit(`increment-me`); // 이벤트 발생
+                    console.log('1');
+                },
+                incrementCounter() {
+                    console.log('2'); // 출력 안됨
+                }
+            }
+        };
+        
+        let webstroe = new Vue({
+            el : '#app',  
+            components : {'my-component' : MyComponent},
+             data() {
+                return {
+                   counter : 0,
+                }
+            },
+            methods : {
+                incrementCounter() {
+                    this.counter++;
+                },
+                
+            },
+    });
+        
+    </script>
+</body>
+</html>

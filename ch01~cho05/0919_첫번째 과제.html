@@ -40,7 +40,21 @@
             </div>
             </main>
         </div>
-        <div v-else>   
+        <div v-else>  
+            <div class="col-md-6">
+                <strong>이름:</strong>
+                <input v-model="order.firstName" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <strong>상:</strong>
+                <input v-model="order.lastName" class="form-control">
+            </div>
+            <div>
+                <pre>
+                    이름 : {{order.firstName}}
+                    성 : {{order.lastName}}
+                </pre>
+            </div>
             <div class="nav justify-content-end cart">
                 <button type="button" class="btn btn-warning btn-lg" @click="showCheckout">
                     <span>장바구니 {{ cartItemCount }}</span>
@@ -83,7 +97,6 @@
                 },
             cart : [], // 카트 아이템을 담은 배열
             showProduct : true 
-
             },
             
         computed : {

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue js</title>
+    <title>Vue js</title> 
     <link rel="stylesheet" href="assets/css/app.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -16,6 +16,10 @@
 </head>
 
 <body>
+    <div id="test">
+
+    </div>
+
     <div id="app">
         <div>
             <header>
@@ -35,7 +39,9 @@
                             <h1 v-text="product.title"></h1>
                             <p v-html="product.description"></p>
                             <p>{{ product.price | formatPrice }}</p>
+                            <p>장바구니에 담은 갯수 : {{ cartItemCount }}</p>
                             <p>현재 재고량 : {{ remaindInventory }}</p>
+                            <p> {{ canAddToCart }}</p>
                             <button v-if="canAddToCart" class="btn btn-primary btn-lg" @click="addToCart">장바구니
                                 담기</button>
                             <button v-else disabled class="btn btn-secondary btn-lg">장바구니 담기</button>
@@ -86,7 +92,7 @@
                     <div class="col-md-4"><strong>요청사항</strong>
                         <select v-model="order.request" class="form-control">
                             <option disabled value="">요청사항</option>
-                            <option v-for="(v, k) in requests" :value="k">{{ v }}</option>
+                            <option v-for="(value, key) in requests" :value="key">{{ value }}</option>
                         </select>
                     </div>
                 </div>
@@ -146,6 +152,24 @@
             }
         }
 
+        let test = new Vue({
+            el : '#test',
+            data : {
+                length : 5,
+                width : 3
+            },
+            computed : {
+                area() {
+                    return this.length * this.width;
+                }
+            },
+            watch : {
+                id(newVal, oldVal) {
+                    console.log(`newVal => ${newVal}, oldVal => ${oldVal}`);
+                }
+            }
+        });
+
         let webstore = new Vue({
 
             el: '#app',
@@ -162,7 +186,6 @@
                 },
                 cart: [], // 카트 아이템을 담은 배열
                 showProduct: true,
-                
                 order: {
                     payment: '',
                     cash: '현금',
@@ -173,7 +196,9 @@
                     detailAddress: '',
                     firstName: '',
                     sameInfo : '',
+                    request : '',
                 },
+
                 requests: {
                     first: '배송 전 연락바랍니다.',
                     second: '문 앞에 놔주세요',
@@ -181,23 +206,33 @@
                     four: '배송 후 문자 남겨주세요',
                 },
             },
+            // computed : 실시간으로 계산?
             computed: {
                 productName() {
                     return `[${this.product.id}] ${this.product.title}`;
                 },
+                // 장바구니 갯수
                 cartItemCount() {
                     return this.cart.length;
                 },
+                // 현재 남은 재고 갯수
                 remaindInventory() {
                     let v = this.product.inventory - this.cart.length;
                     return v > 0 ? `${v}개` : `없음`;
                 },
+                // 장바구니에 담을 수 있는지 확인
+                // product.inventory = 현재 재고량
+                // cart.lenght = 현재 담긴 카트 갯수
                 canAddToCart() {
+                    console.log(`${this.product.inventory}`)
+                    console.log(`${this.cart.length}`)
                     return this.product.inventory > this.cart.length;
                 }
 
             }, // end of computed
+            // filters : return 값이 있고, 기존의 값을 유지하면서 다른 형식으로 표현?
             filters: { // 출력 필터를 포함
+                // 가격 다른 형식으로 표시  
                 formatPrice(price) {
                     if (!parseInt(price)) { return ""; } // 정수를 받지 못하면 즉시 "" 반환
                     if (price > 99999) // $1,000이상의 값들을 형식화
@@ -218,16 +253,19 @@
                     }
                 }
             }, // end of filters
+            // methods => 이벤트 발생 시 실행, 리턴 값이 따로 지정 X
             methods: {
                 addToCart() // 장바구니 담기 버튼
                 {
-                    if (this.product.inventory > this.cart.length) // product의 inventory 수가 cart 배열의 길이보다 크다면?
+                    if (this.product.inventory > this.cart.length) 
+                    // 전체 재고량이 장바구니에 담긴 갯수보다 크다면?
                     {
                         this.cart.push(this.product.id); // cart 배열에 product.id를 push
                     }
                     this.saveCart();
                 },
-                showCheckout() // 주문하기 버튼
+                // 주문하기 버튼
+                showCheckout() 
                 {
                     if (this.cart.length == 0) {
                         alert("장바구니에 물품이 없습니다.");
@@ -235,7 +273,8 @@
                         this.showProduct = this.showProduct ? false : true;
                     }
                 },
-                emptyToCart() // 장바구니 비우기
+                // 장바구니 비우기
+                emptyToCart() 
                 {
                     this.cart = [];
                     this.saveCart();

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter6 컴포넌트 index2.html</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <h1>WD2A 2101257 김다현</h1>
+    <div id="app">
+        <div>새로운 페이지</div>
+        
+        <my-component></my-component>
+        <my-component></my-component>
+        <my-component></my-component>
+
+    </div>
+    <script>
+        const counter = { count : 0 };
+        const MyComponent = {
+            template : `<div><button v-on:click="count += 1"> {{ count }} </button></div>`,
+            data() {
+                // return 이 단일 값인 이유 : { count : 0 } 자체가 객체이기 때문
+                return { count : 0 };
+                // return counter VS retunr {count : 0}의 차이 
+                // 객체가 매개변수, 변수에 참조될 때 일반 데이터는 숫자, 불린형 등 복사가 됨
+                // 객체는 변수에 담길 때 그 주소값을 복사하기 때문에
+                // 이미 만들어진 글로벌 변수에 공유가 되므로 한 개에 만들어서 공유해서 사용 => 그래서 동시에 변경이 됨
+                // 그러나 {count : 0} 일 경우 컴포넌트를 사용 할 때 마다 새로운 게 생성
+                // 참조형인지 복사형인지 구분할 줄 알아야 됨
+            }
+        };
+
+       let webstroe = new Vue({                                                              
+            el : '#app',          
+            components : {'my-component' : MyComponent},
+             data() {
+                return {
+                    message : ``,
+                }
+            }
+
+    }); 
+    </script>
+</body>
+</html>
