@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter7</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!--
+            slot-scope : 범위 슬롯<
+            지정 슬롯과 비슷하지만 데이터를 넘겨줄 수 있는 재활용 가능한 템플릿에 가까움
+        -->
+        <book-component :books="books">
+            <h1 slot="header">{{header}}</h1>
+            <template slot="book" slot-scope="props">
+                <i>{{props.text.title}}</i> by : <small>{{props.text.author}}</small></br>
+            </template>
+        </book-component>
+    </div>
+
+    <script>
+        const BookComponent = {
+            template : `
+            <div>
+                <slot name="header"></slot>
+                <slot name="book"
+                      v-for="book in books" :text="book"></slot>
+            </div>
+            `,
+            props : ['books'],
+        }
+        // 뷰에다가 속성이 있어야 함 => 바인딩
+        new Vue({
+            el: '#app', 
+            components : {
+                'book-component' : BookComponent,
+            },
+            data() {
+                return {
+                    header : '책 저자 폼',
+                    books: [
+                        {'author' : '김다현', title: '뷰 잘하기'},
+                        {'author' : '홍길동', title: '뷰란 무엇인가?'},
+                        {'author' : '장발장', title: '뷰로 성공하기'},
+                    ],
+                }
+            },
+        });
+    </script>
+</body>
+</html>

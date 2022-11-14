@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chapter7</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <!--
+        해당 컴포넌트는 <book-component>와 동일
+    -->
+    <div id="app">
+        <button @click="cycle">컴포넌트 변경하기</button>
+       <component :is="currentView"></component>
+    </div>
+
+    <script>
+        const BookComponent = {
+            template : `
+            <div>
+                BookComponent
+            </div>
+            `,
+        };
+
+        const FormComponent = {
+            template : `
+            <div>
+                FormComponent
+            </div>
+            `,
+        };
+
+        const HeaderComponent = {
+            template : `
+            <div>
+                HeaderComponent
+            </div>
+            `,
+        };
+
+        new Vue({
+            el: '#app', 
+            components : {
+                'book-component' : BookComponent,
+                'form-component' : FormComponent,
+                'header-component' : HeaderComponent,
+            },
+            data() {
+                return {
+                    // 처음에 보여질 뷰 화면
+                   currentView : BookComponent,
+                }
+            },
+            methods : {
+                // === (일치연산자) : 타입과 값 모두 동일한가?
+                cycle() {
+                    if(this.currentView === HeaderComponent) {
+                        this.currentView = BookComponent;
+                    } else {
+                        this.currentView = this.currentView === BookComponent 
+                                            ? FormComponent : HeaderComponent;
+                    }
+                },
+            } 
+        });
+    </script>
+</body>
+</html>
